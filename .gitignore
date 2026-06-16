@@ -1,0 +1,43 @@
+# Data files
+*.csv
+*.npz
+*.npy
+
+
+# Model weights and params
+*.pt
+*.pth
+*.pkl
+best_params_*.json
+
+# Images and plots
+*.png
+*.jpg
+*.jpeg
+*.svg
+*.pdf
+
+# Text and log files
+*.txt
+*.log
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+
+# Jupyter
+.ipynb_checkpoints/
+*.ipynb
+
+# Environments
+.env
+*.egg-info/
+dist/
+build/
+
+# OS
+.DS_Store
+Thumbs.db
