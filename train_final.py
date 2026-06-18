@@ -11,13 +11,15 @@ from models import (
     CNNLSTM, GRUEncoderDecoderAttn, Informer
 )
 
-HEIGHT     = 100
-EPOCHS     = 100
-DEVICE     = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
+HEIGHT         = 100
+EPOCHS         = 100
+DEVICE         = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
+OPTUNA_DIR     = 'outputs/optuna'
+CHECKPOINT_DIR = 'outputs/checkpoints'
 
 
 def load_params(name):
-    path = f'best_params_{name}.json'
+    path = os.path.join(OPTUNA_DIR, f'best_params_{name}.json')
     if not os.path.exists(path):
         raise FileNotFoundError(f"Run hyperparam_optuna.py first — {path} not found.")
     with open(path) as f:
@@ -62,11 +64,12 @@ def train_one(name, train_dataset, val_dataset):
     model = build_model(name, p, input_size, output_size, seq_len).to(DEVICE)
     print(f"\n{'='*60}\nTraining {name.upper()} with params: {p}\n{'='*60}")
 
+    os.makedirs(CHECKPOINT_DIR, exist_ok=True)
     model, history = train_model(
         model, train_loader, val_loader,
         lr        = p['lr'],
         epochs    = EPOCHS,
-        save_path = f'best_{name}.pt',
+        save_path = os.path.join(CHECKPOINT_DIR, f'best_{name}.pt'),
         device    = DEVICE
     )
     plot_loss(history, title=f'{name.upper()} Training')

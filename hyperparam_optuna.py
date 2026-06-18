@@ -1,9 +1,12 @@
 import json
+import os
 import torch
 import torch.nn as nn
 import optuna
 from torch.utils.data import DataLoader
 from datagen import dataset_gen, VMDDataset
+
+OPTUNA_DIR = 'outputs/optuna'
 from models import (
     GRUForecaster, LSTMForecaster, BiLSTMForecaster,
     GRUEncoderDecoder, AttentionForecaster, TransformerForecaster,
@@ -61,7 +64,8 @@ def _run_study(objective_fn, X, y, name):
     study.optimize(lambda trial: objective_fn(trial, X, y), n_trials=N_TRIALS, timeout=TIMEOUT)
     print(f"\n[{name}] Best val loss: {study.best_value:.6f}")
     print(f"[{name}] Best params:   {study.best_params}")
-    with open(f'best_params_{name}.json', 'w') as f:
+    os.makedirs(OPTUNA_DIR, exist_ok=True)
+    with open(os.path.join(OPTUNA_DIR, f'best_params_{name}.json'), 'w') as f:
         json.dump(study.best_params, f, indent=2)
     return study
 
